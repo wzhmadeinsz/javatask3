@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jnshu.dao.PersonDao">
+        <!--这个接口映射配置文件-->
+        <!-- 为了返回list 类型而定义的returnMap -->
+        <resultMap type="com.jnshu.model.Person" id="person">
+            <id column="id" property="id" />
+            <result column="name" property="name" />
+            <result column="qq" property="qq" />
+            <result column="date" property="date" />
+            <result column="graduate" property="graduate" />
+            <result column="wish" property="wish" />
+            <result column="bother" property="bother" />
+            <result column="hearfrom" property="hearfrom" />
+        </resultMap>
+    <select id="takeById" resultMap="person" parameterType="int">
+        SELECT * FROM applytest WHERE id=#{id}
+    </select>
+
+    <select id="takeAll" resultMap="person">
+    SELECT * FROM applytest
+    </select>
+
+    <select id="addper" parameterType="com.jnshu.model.Person">
+    INSERT INTO applytest (name,qq,date,graduate,wish,bother,hearfrom) VALUE (#{name},#{qq},#{date},#{graduate},#{wish},#{bother},#{hearfrom})
+    </select>
+
+    <select id="deleById" parameterType="int">
+    DELETE from applytest where id=#{id}
+    </select>
+
+    <select id="updatePer" parameterType="com.jnshu.model.Person">
+    UPDATE applytest SET name=#{name},qq=#{qq},date=#{date},graduate=#{graduate},wish=#{wish},bother=#{bother},hearfrom=#{hearfrom} WHERE id=#{id}
+    </select>
+
+    <select id="takeByName" parameterType="String" resultType="Person">
+        SELECT * FROM applytest WHERE name=#{name}
+    </select>
+</mapper>

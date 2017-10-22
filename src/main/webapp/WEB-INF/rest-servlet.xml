@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- 注解驱动 -->
+    <mvc:annotation-driven />
+    <context:component-scan base-package="com.jnshu.controllar" />
+    <!--<mvc:default-servlet-handler/>-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsp/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <bean id="mappingJacksonHttpMessageConverter"
+          class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+                <value>application/json;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="mappingJacksonHttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--切面配置-->
+    <bean id="logger" class="com.jnshu.aop.AopLog"/>
+    <aop:config>
+        <aop:aspect id="checkperaop" ref="logger">
+            <aop:pointcut id="find" expression="execution(* com.jnshu.controllar.TheControl.checkuser(..))"/>
+            <aop:after method="afterSqlfind" pointcut-ref="find" />
+        </aop:aspect>
+        <aop:aspect id="time" ref="logger">
+            <aop:pointcut id="addAllMethod" expression="execution(* com.jnshu.controllar.TheControl.*())" />
+            <aop:before method="beforeSqlact" pointcut-ref="addAllMethod" />
+        </aop:aspect>
+        <aop:aspect id="addperaop" ref="logger">
+            <aop:pointcut id="add" expression="execution(* com.jnshu.controllar.TheControl.adduser(..))"/>
+            <aop:after method="afterSqlintsert" pointcut-ref="add" />
+        </aop:aspect>
+        <aop:aspect id="deleperaop" ref="logger">
+            <aop:pointcut id="dele" expression="execution(* com.jnshu.controllar.TheControl.deleteuser(..))"/>
+            <aop:after method="afterSqldelete" pointcut-ref="dele" />
+        </aop:aspect>
+        <aop:aspect id="updateperaop" ref="logger">
+            <aop:pointcut id="update" expression="execution(* com.jnshu.controllar.TheControl.updateuser(..))"/>
+            <aop:after method="afterSqlupdate" pointcut-ref="update" />
+        </aop:aspect>
+
+
+
+    </aop:config>
+
+
+</beans>
